@@ -17,7 +17,8 @@ class MoviesController < ApplicationController
       @movies = Movie.all
       @sort = "none"
     end
-  @all_ratings = Movie.uniq.pluck(:rating)
+    @all_ratings = Movie.uniq.pluck(:rating)
+    @selected_ratings = ['G', 'PG']
   end
 
   def new
