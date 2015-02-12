@@ -9,6 +9,8 @@ class MoviesController < ApplicationController
   def index
     if params.key?(:foo)
       @movies = Movie.find(:all, :order => "title")
+    elsif params.key?(:bar)
+      @movies = Movie.find(:all, :order => "release_date")
     else
       @movies = Movie.all
     end
