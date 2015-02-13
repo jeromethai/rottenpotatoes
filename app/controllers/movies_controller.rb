@@ -7,7 +7,7 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings = ['G', 'PG', 'PG-13', 'R']
+    @all_ratings = Movie.all_ratings
     # initialize session
     session[:ratings] = @all_ratings unless session[:ratings].present?
     session[:sort_title] = '0' unless session[:sort_title].present?
