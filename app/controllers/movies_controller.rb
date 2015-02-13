@@ -23,6 +23,13 @@ class MoviesController < ApplicationController
       session[:sort_release_date] = '1'
     end
 
+    unless params[:ratings].present? and params[:sort_title].present? and params[:sort_release_date].present?
+      params[:ratings] = Hash[session[:ratings].collect {|r| [ r, '1' ]}]
+      params[:sort_title] = session[:sort_title]
+      params[:sort_release_date] = session[:sort_release_date]
+      redirect_to movies_path(params)
+    end
+
     @selected_ratings = session[:ratings]
     if session[:sort_title] == '1'
       @movies = Movie.order(:title).where(:rating => session[:ratings])
