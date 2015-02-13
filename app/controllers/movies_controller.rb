@@ -7,18 +7,20 @@ class MoviesController < ApplicationController
   end
 
   def index
-    if params.key?(:foo)
-      @movies = Movie.find(:all, :order => "title")
+    @all_ratings = ['G', 'PG', 'PG-13', 'R']
+    @selected_ratings = (params[:ratings].present? ? params[:ratings].keys : @all_ratings)
+    if params.key?(:sort_title)
+      @movies = Movie.order(:title).where(:rating => @selected_ratings)
       @sort = "title"
-    elsif params.key?(:bar)
-      @movies = Movie.find(:all, :order => "release_date")
+    elsif params.key?(:sort_release_date)
+      @movies = Movie.order(:release_date).where(:rating => @selected_ratings)
       @sort = "release_date"
     else
-      @movies = Movie.all
+      @movies = Movie.where(:rating => @selected_ratings)
       @sort = "none"
     end
-    @all_ratings = Movie.uniq.pluck(:rating)
-    @selected_ratings = ['G', 'PG']
+    # @all_ratings = Movie.uniq.pluck(:rating)
+    # @selected_ratings = (params[:ratings].present? ? params[:ratings].keys : @all_ratings)
   end
 
   def new
