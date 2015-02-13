@@ -8,19 +8,32 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = ['G', 'PG', 'PG-13', 'R']
-    @selected_ratings = (params[:ratings].present? ? params[:ratings].keys : @all_ratings)
-    if params.key?(:sort_title)
-      @movies = Movie.order(:title).where(:rating => @selected_ratings)
+    # initialize session
+    session[:ratings] = @all_ratings unless session[:ratings].present?
+    session[:sort_title] = '0' unless session[:sort_title].present?
+    session[:sort_release_data] = '0' unless session[:sort_release_date].present?
+    
+    # update session
+    session[:ratings] = params[:ratings].keys if params[:ratings].present?
+    if params[:sort_title].present?
+      session[:sort_title] = '1'
+      session[:sort_release_date] = '0'
+    elsif params[:sort_release_date].present?
+      session[:sort_title] = '0'
+      session[:sort_release_date] = '1'
+    end
+
+    @selected_ratings = session[:ratings]
+    if session[:sort_title] == '1'
+      @movies = Movie.order(:title).where(:rating => session[:ratings])
       @sort = "title"
-    elsif params.key?(:sort_release_date)
-      @movies = Movie.order(:release_date).where(:rating => @selected_ratings)
+    elsif session[:sort_release_date] == '1'
+      @movies = Movie.order(:release_date).where(:rating => session[:ratings])
       @sort = "release_date"
     else
       @movies = Movie.where(:rating => @selected_ratings)
       @sort = "none"
     end
-    # @all_ratings = Movie.uniq.pluck(:rating)
-    # @selected_ratings = (params[:ratings].present? ? params[:ratings].keys : @all_ratings)
   end
 
   def new
